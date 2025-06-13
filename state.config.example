@@ -1,3 +1,1 @@
 bucket = "rs-aws-devops-lemontree"
-key    = "state/terraform.tfstate"
-region = "eu-west-1"
