@@ -42,7 +42,7 @@ jobs:
           aws-region: eu-west-1
 
       - name: Terraform Init
-        run: terraform init -backend-config="bucket=${{ secrets.TERRAFORM_STATE_BUCKET }}""
+        run: terraform init -backend-config="bucket=${{ secrets.TERRAFORM_STATE_BUCKET }}"
 
       - name: Terraform Plan
         run: terraform plan
