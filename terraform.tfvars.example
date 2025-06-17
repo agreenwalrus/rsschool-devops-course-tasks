@@ -1,2 +1,3 @@
 aws_region  = "eu-west-1"
 bucket_name = "rs-aws-devops-lemontree"
+repo_name   = "agreenwalrus/rsschool-devops-course-tasks"
