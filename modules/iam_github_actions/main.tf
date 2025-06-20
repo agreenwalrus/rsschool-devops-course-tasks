@@ -1,3 +1,6 @@
+# This module creates an IAM role for GitHub Actions to assume
+# with permissions to manage AWS resources.
+
 resource "aws_iam_openid_connect_provider" "github" {
   url = "https://token.actions.githubusercontent.com"
 
