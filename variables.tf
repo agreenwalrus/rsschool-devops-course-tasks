@@ -24,3 +24,21 @@ variable "vpc_name" {
   description = "Name of the VPC"
   default     = "main-vpc"
 }
+
+variable "public_subnets" {
+  type        = list(string)
+  description = "List of CIDR blocks for public subnets"
+  default     = ["10.0.1.0/24", "10.0.2.0/24"]
+}
+
+variable "private_subnets" {
+  type        = list(string)
+  description = "List of CIDR blocks for private subnets"
+  default     = ["10.0.100.0/24", "10.0.101.0/24"]
+}
+
+variable "azs" {
+  type        = list(string)
+  description = "List of availability zones to create subnets in. The number of AZs should match the number of CIDR blocks."
+  default     = ["eu-west-1a", "eu-west-1b"]
+}
