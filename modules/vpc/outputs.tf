@@ -1,0 +1,26 @@
+# Outputs for VPC module
+
+output "vpc_id" {
+  description = "ID of the VPC"
+  value       = aws_vpc.this.id
+}
+
+output "vpc_cidr_block" {
+  description = "CIDR block of the VPC"
+  value       = aws_vpc.this.cidr_block
+}
+
+output "internet_gateway_id" {
+  description = "ID of the Internet Gateway"
+  value       = aws_internet_gateway.this.id
+}
+
+output "public_route_table_id" {
+  description = "ID of the public route table"
+  value       = aws_route_table.public.id
+}
+
+output "vpc_default_security_group_id" {
+  description = "ID of the default security group"
+  value       = aws_vpc.this.default_security_group_id
+}
