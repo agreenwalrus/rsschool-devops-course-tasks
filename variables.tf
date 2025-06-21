@@ -1,6 +1,7 @@
 variable "aws_region" {
   type        = string
   description = "The AWS region to deploy resources in."
+  default     = "us-east-1"
 }
 
 variable "bucket_name" {
@@ -43,14 +44,25 @@ variable "azs" {
   default     = []
 }
 
+variable "bastion_allowed_cidr" {
+  type        = list(string)
+  description = "CIDR blocks allowed to connect to bastion host"
+  default     = ["0.0.0.0/0"] # Should be restricted in production
+}
+
 variable "ec2_instance_type" {
   type        = string
-  description = "EC2 instance type for public instances"
+  description = "EC2 instance type for bastion/NAT and other EC2 instances"
   default     = "t2.micro"
 }
 
 variable "ec2_key_name" {
   type        = string
-  description = "Name of the AWS key pair to use for EC2 instances (optional)"
-  default     = null
+  description = "Name of the AWS key pair to use for EC2 instances"
+}
+
+variable "ami_id" {
+  type        = string
+  description = "AMI ID to use for EC2 instances. If not set, the latest Amazon Linux 2 AMI will be used."
+  default     = ""
 }

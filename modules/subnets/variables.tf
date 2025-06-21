@@ -28,7 +28,7 @@ variable "is_public" {
   default = false
 }
 
-variable "name_prefix" {
+variable "vpc_name" {
   type        = string
-  description = "Prefix for the names of the subnets. This will be used to create unique names for each subnet."
+  description = "Name tag for the VPC"
 }

@@ -19,12 +19,12 @@ output "internet_gateway_id" {
 }
 
 output "public_route_table_id" {
-  value       = module.vpc.public_route_table_id
+  value       = module.routes.public_route_table_id
   description = "ID of the public route table"
 }
 
 output "private_route_table_id" {
-  value       = module.vpc.private_route_table_id
+  value       = module.routes.private_route_table_id
   description = "ID of the private route table"
 }
 
@@ -79,18 +79,13 @@ output "ec2_private_instance_details" {
 }
 
 output "nat_instance_id" {
-  value       = module.ec2_public.nat_server_id
+  value       = module.nat_bastion.nat_instance_id
   description = "ID of the NAT server instance"
 }
 
 output "nat_instance_public_ip" {
-  value       = module.ec2_public.nat_server_public_ip
+  value       = module.nat_bastion.nat_instance_public_ip
   description = "Public IP address of the NAT server instance"
-}
-
-output "nat_instance_private_ip" {
-  value       = module.ec2_public.nat_server_private_ip
-  description = "Private IP address of the NAT server instance"
 }
 
 output "calculated_availability_zones" {

@@ -18,11 +18,6 @@ output "public_dns" {
   value       = aws_instance.ec2[*].public_dns
 }
 
-output "security_group_id" {
-  description = "ID of the security group"
-  value       = aws_security_group.ec2_sg.id
-}
-
 output "instance_details" {
   description = "Combined details of all instances"
   value = [
@@ -39,17 +34,3 @@ output "instance_details" {
   ]
 }
 
-output "nat_server_id" {
-  description = "ID of the NAT server instance (if enabled)"
-  value       = var.enable_nat_server ? aws_instance.ec2[0].id : null
-}
-
-output "nat_server_public_ip" {
-  description = "Public IP of the NAT server instance (if enabled)"
-  value       = var.enable_nat_server ? aws_instance.ec2[0].public_ip : null
-}
-
-output "nat_server_private_ip" {
-  description = "Private IP of the NAT server instance (if enabled)"
-  value       = var.enable_nat_server ? aws_instance.ec2[0].private_ip : null
-}

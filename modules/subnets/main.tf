@@ -6,7 +6,7 @@ resource "aws_subnet" "subnet" {
   map_public_ip_on_launch = var.is_public
 
   tags = {
-    Name = "${var.name_prefix}-${count.index + 1}"
+    Name = "${var.vpc_name}-${var.is_public ? "public" : "private"}-${count.index + 1}"
   }
 }
 

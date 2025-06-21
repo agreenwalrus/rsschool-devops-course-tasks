@@ -4,8 +4,10 @@ repo_name   = "agreenwalrus/rsschool-devops-course-tasks"
 
 vpc_cidr = "10.0.0.0/16"
 vpc_name = "main-vpc"
+
 # azs              = ["eu-west-1a", "eu-west-1b"]  # Optional: will auto-detect if not provided
 # public_subnets   = ["10.0.0.0/24", "10.0.2.0/24"]   # Optional: will auto-calculate if not provided
 # private_subnets  = ["10.0.1.0/24", "10.0.3.0/24"]   # Optional: will auto-calculate if not provided
+
 ec2_instance_type = "t2.micro"
-# ec2_key_name    = "your-key-pair-name"  # Optional: for SSH access
+ec2_key_name      = "task2"

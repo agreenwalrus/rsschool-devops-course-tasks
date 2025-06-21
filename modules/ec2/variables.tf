@@ -8,13 +8,13 @@ variable "subnet_ids" {
   description = "List of subnet IDs where EC2 instances will be created"
 }
 
-variable "instance_type" {
+variable "ec2_instance_type" {
   type        = string
   description = "EC2 instance type"
   default     = "t2.micro"
 }
 
-variable "key_name" {
+variable "ec2_key_name" {
   type        = string
   description = "Name of the AWS key pair to use for EC2 instances"
   default     = null
@@ -38,14 +38,13 @@ variable "vpc_cidr" {
   default     = null
 }
 
-variable "enable_nat_server" {
-  type        = bool
-  description = "Whether to configure one of the instances as NAT server"
-  default     = false
-}
-
 variable "private_route_table_id" {
   type        = string
-  description = "ID of private route table for NAT server route (required if enable_nat_server is true)"
+  description = "ID of private route table for NAT server route"
   default     = null
+}
+
+variable "security_group_ids" {
+  type        = list(string)
+  description = "List of security group IDs to attach to the EC2 instances"
 }
