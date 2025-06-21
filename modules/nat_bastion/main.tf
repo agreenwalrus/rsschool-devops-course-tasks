@@ -8,7 +8,7 @@ resource "aws_instance" "nat_bastion" {
   key_name                    = var.ec2_key_name
   source_dest_check           = false
   user_data                   = file("${path.module}/user_data_nat.sh")
-  tags = { Name = "${var.vpc_name}-nat-bastion" }
+  tags                        = { Name = "${var.vpc_name}-nat-bastion" }
 }
 
 # Data source for AMI

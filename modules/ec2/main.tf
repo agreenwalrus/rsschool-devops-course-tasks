@@ -26,7 +26,7 @@ resource "aws_instance" "ec2" {
   vpc_security_group_ids      = var.security_group_ids
   associate_public_ip_address = var.is_public
   key_name                    = var.ec2_key_name
-  
+
   user_data = base64encode(templatefile("${path.module}/user_data_default.sh", {
     instance_name = "${var.name_prefix}-${count.index + 1}"
     instance_type = var.is_public ? "public" : "private"
