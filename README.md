@@ -79,3 +79,15 @@ To destroy all resources created by this Terraform configuration:
 ```bash
 terraform destroy
 ```
+
+## GitHub Actions Required Secrets
+
+To enable CI/CD with GitHub Actions, you must configure the following repository secrets:
+
+- `EXTRA_BUCKET` — S3 bucket name for storing Terraform artifacts (not the state bucket)
+- `TERRAFORM_STATE_BUCKET` — S3 bucket name for storing Terraform state
+- `AWS_ACCOUNT_ID` — Your AWS account ID
+- `EC2_KEY_NAME` — Name of the AWS EC2 key pair to use for SSH
+- `ALLOWED_CIDR` — CIDR block allowed to access the bastion host (e.g., `1.2.3.4/32`)
+
+All secrets can be set in your repository settings under **Settings → Secrets and variables → Actions**.
