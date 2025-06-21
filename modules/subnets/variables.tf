@@ -1,15 +1,15 @@
 variable "vpc_id" {
-  type = string
+  type        = string
   description = "ID of the VPC where the subnets will be created. This should be provided to associate the subnets with the correct VPC."
 }
 
 variable "cidr_blocks" {
-  type = list(string)
+  type        = list(string)
   description = "List of CIDR blocks for the subnets. Each CIDR block should correspond to an availability zone in the same order."
 }
 
 variable "azs" {
-  type = list(string)
+  type        = list(string)
   description = "List of availability zones to create subnets in. The number of AZs should match the number of CIDR blocks."
 
   validation {
@@ -19,7 +19,7 @@ variable "azs" {
 }
 
 variable "route_table_id" {
-  type = string
+  type        = string
   description = "ID of the route table to associate with the subnets. If not provided, a new route table will be created."
 }
 

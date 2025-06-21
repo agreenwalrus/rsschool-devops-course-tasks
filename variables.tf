@@ -27,18 +27,30 @@ variable "vpc_name" {
 
 variable "public_subnets" {
   type        = list(string)
-  description = "List of CIDR blocks for public subnets"
-  default     = ["10.0.1.0/24", "10.0.2.0/24"]
+  description = "List of CIDR blocks for public subnets. If not provided, will be calculated automatically."
+  default     = []
 }
 
 variable "private_subnets" {
   type        = list(string)
-  description = "List of CIDR blocks for private subnets"
-  default     = ["10.0.100.0/24", "10.0.101.0/24"]
+  description = "List of CIDR blocks for private subnets. If not provided, will be calculated automatically."
+  default     = []
 }
 
 variable "azs" {
   type        = list(string)
-  description = "List of availability zones to create subnets in. The number of AZs should match the number of CIDR blocks."
-  default     = ["eu-west-1a", "eu-west-1b"]
+  description = "List of availability zones to create subnets in. If not provided, will use available AZs in the region."
+  default     = []
+}
+
+variable "ec2_instance_type" {
+  type        = string
+  description = "EC2 instance type for public instances"
+  default     = "t2.micro"
+}
+
+variable "ec2_key_name" {
+  type        = string
+  description = "Name of the AWS key pair to use for EC2 instances (optional)"
+  default     = null
 }
