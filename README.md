@@ -1,85 +1,81 @@
-# rsschool-devops-course-tasks
-RS AWS DevOps 2025Q2
+# AWS VPC Infrastructure with Bastion Host and NAT Instance
 
-# Terraform AWS Infrastructure Setup
+This Terraform project creates a secure AWS VPC infrastructure with public and private subnets, a bastion host for secure access, and a NAT instance for outbound connectivity from private subnets.
 
-This project contains Terraform code and GitHub Actions workflows for deploying AWS infrastructure with remote state stored in S3 and CI/CD automation.
+## Infrastructure Components
+
+- **VPC**: A Virtual Private Cloud with CIDR block 10.0.0.0/16
+- **Public Subnets**: 2 public subnets in different availability zones
+- **Private Subnets**: 2 private subnets in different availability zones
+- **Internet Gateway**: Allows communication between instances in the VPC and the internet
+- **NAT Instance**: Allows instances in private subnets to access the internet
+- **Bastion Host**: Secure entry point for SSH access to instances in private subnets. The same physical instance as NAT one
+- **Security Groups**: Configured for private and public instances, bastion host + NAT instance
+
+## Network Connectivity
+
+- Instances in all subnets can communicate with each other
+- Instances in public subnets have direct internet access
+- Instances in private subnets can access the internet through the NAT instance
+- External access to private instances is only possible through the bastion host
 
 ## Prerequisites
-- AWS account with permissions to create IAM roles, S3 buckets, and other resources
-- [Terraform](https://www.terraform.io/) >= 1.0.0
-- AWS S3 bucket for storing Terraform state
-- GitHub repository with the following secrets configured:
-  - `AWS_ACCOUNT_ID`: Your AWS account ID
-  - `TERRAFORM_STATE_BUCKET`: Name of the S3 bucket for Terraform state
 
-## Project Structure
-- `provider.tf` — Provider and backend configuration
-- `variables.tf` — Input variables (region, bucket name, etc.)
-- `terraform.tfvars.example` — Example values for variables for local run
-- `s3_bucket.tf` — S3 bucket resource for state (optional, if you want to create it via Terraform)
-- `iam_github_actions.tf` — IAM role and OIDC provider for GitHub Actions
-- `.github/workflows/terraform.yaml` — CI/CD workflow for Terraform
-
-## Terraform State Management
-Terraform uses a state file to keep track of resources it manages. In this project, the state is stored remotely in an S3 bucket. State locking is enabled by default using the S3 backend to prevent concurrent modifications.
-
-
-- The backend configuration is in `provider.tf`.
-- Extra S3 bucket is defined in `s3_bucket.tf`.
-- The state file path is typically `state/terraform.tfstate` in S3 bucket.
-
-## AWS Configuration
-Before running Terraform, configure your AWS credentials so Terraform and the GitHub Actions workflow can authenticate to AWS. You can do this in one of the following ways:
-
-### Option 1: Using AWS CLI
-If you have the AWS CLI installed, run:
-```sh
-aws configure
-```
-This will prompt you for your AWS Access Key ID, Secret Access Key, region, and output format.
-
-### Option 2: Using Environment Variables
-Set the following environment variables in your shell:
-```sh
-$env:AWS_ACCESS_KEY_ID="<your-access-key-id>"
-$env:AWS_SECRET_ACCESS_KEY="<your-secret-access-key>"
-$env:AWS_DEFAULT_REGION="eu-west-1"
-```
-Replace the values with your actual credentials and preferred region.
+- AWS account with appropriate permissions
+- Terraform installed (version >= 1.0.0)
+- SSH key pair created in AWS
 
 ## Usage
 
-### 1. Configure AWS and S3
-- Create an S3 bucket for Terraform state.
-- Enable versioning and encryption on the bucket for best practices.
+1. Clone this repository
+2. Update the `terraform.tfvars` file with your specific values. Use `terraform.tfvars` as reference:
 
-### 2. Set up GitHub Secrets
-In your repository settings, add:
-- `AWS_ACCOUNT_ID` — your AWS account ID
-- `TERRAFORM_STATE_BUCKET` — the name of S3 bucket for state
-- `EXTRA_BUCKET` -  the name of extra S3 bucket (as an example)
 
-### 3. Configure IAM for GitHub Actions
-- Deploy the resources in `iam_github_actions.tf` to create an OIDC provider and IAM role for GitHub Actions.
-- The trust policy allows the repo to assume the role via OIDC.
 
-### 4. Initialize and Apply Terraform Locally
-- Create state.config file based on state.config.example.
-- Create terraform.tfvars file based on terraform.tfvars.example to provide variable values.
-```sh
-terraform init terraform init -backend-config="./state.config"
-terraform plan
+3. Initialize Terraform:
+
+```bash
+terraform init
+```
+
+4. Apply the Terraform configuration:
+
+```bash
 terraform apply
 ```
 
-### 5. CI/CD with GitHub Actions
-- On every push or pull request to `main`, the workflow in `.github/workflows/terraform.yaml` will:
-  - Check Terraform formatting
-  - Run `terraform plan`
-  - On push to `main`, run `terraform apply`
-- The workflow uses OIDC to authenticate to AWS securely.
+5. After successful deployment, you'll see outputs including the bastion host's public IP address.
 
-## Variables
-- `aws_region` — AWS region (default: `eu-west-1`)
-- `bucket_name` — S3 bucket
+## Accessing Private Instances
+
+To access instances in private subnets:
+
+1. SSH to the bastion host:
+
+```bash
+ssh -i your-key.pem ec2-user@<bastion-public-ip>
+```
+
+2. From the bastion host, SSH to the private instance:
+
+```bash
+ssh -i your-key.pem ec2-user@<private-instance-ip>
+```
+
+## Security Considerations
+
+- The bastion host security group allows SSH access only
+- Private instances only allow SSH access from the bastion host
+- The NAT instance allows outbound traffic from private subnets
+
+## Cost Optimization
+
+This implementation uses a NAT instance instead of a NAT Gateway to reduce costs.
+
+## Cleanup
+
+To destroy all resources created by this Terraform configuration:
+
+```bash
+terraform destroy
+```
