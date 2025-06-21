@@ -38,6 +38,7 @@ module "security_groups" {
   source               = "./modules/security_groups"
   vpc_id               = module.vpc.vpc_id
   vpc_name             = module.vpc.vpc_name
+  vpc_cidr             = var.vpc_cidr
   private_subnet_cidrs = local.private_subnets
   bastion_allowed_cidr = var.bastion_allowed_cidr
 }

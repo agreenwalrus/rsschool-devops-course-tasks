@@ -66,6 +66,14 @@ resource "aws_security_group" "private_instances" {
     security_groups = [aws_security_group.bastion.id]
   }
 
+  # Allow all traffic from other VPC instances (inter-subnet communication)
+  ingress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = [var.vpc_cidr]
+  }
+
   # Allow all outbound traffic
   egress {
     from_port   = 0
@@ -104,6 +112,14 @@ resource "aws_security_group" "public_instances" {
     to_port     = 22
     protocol    = "tcp"
     cidr_blocks = var.bastion_allowed_cidr
+  }
+
+  # Allow all traffic from other VPC instances (inter-subnet communication)
+  ingress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = [var.vpc_cidr]
   }
 
   # Allow all outbound traffic
