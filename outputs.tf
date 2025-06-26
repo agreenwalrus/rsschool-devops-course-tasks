@@ -34,31 +34,6 @@ output "private_subnet_ids" {
   description = "IDs of the private subnets"
 }
 
-output "ec2_instance_ids" {
-  value       = module.ec2_public.instance_ids
-  description = "IDs of the EC2 instances in public subnets"
-}
-
-output "ec2_public_ips" {
-  value       = module.ec2_public.public_ips
-  description = "Public IP addresses of the EC2 instances"
-}
-
-output "ec2_private_ips" {
-  value       = module.ec2_public.private_ips
-  description = "Private IP addresses of the EC2 instances"
-}
-
-output "ec2_public_dns" {
-  value       = module.ec2_public.public_dns
-  description = "Public DNS names of the EC2 instances"
-}
-
-output "ec2_instance_details" {
-  value       = module.ec2_public.instance_details
-  description = "Detailed information about all EC2 instances"
-}
-
 output "ec2_private_instance_ids" {
   value       = module.ec2_private.instance_ids
   description = "IDs of the EC2 instances in private subnets"

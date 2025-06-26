@@ -54,18 +54,6 @@ module "routes" {
   nat_instance_id     = module.nat_bastion.nat_network_interface_id
 }
 
-module "ec2_public" {
-  source             = "./modules/ec2"
-  vpc_id             = module.vpc.vpc_id
-  subnet_ids         = [module.public_subnets.subnet_ids[1]]
-  ec2_instance_type  = var.ec2_instance_type
-  ec2_key_name       = var.ec2_key_name
-  name_prefix        = "public-ec2"
-  is_public          = true
-  vpc_cidr           = var.vpc_cidr
-  security_group_ids = [module.security_groups.ssh_from_bastion_sg_id, module.security_groups.web_sg_id, module.security_groups.inter_subnet_sg_id]
-}
-
 module "ec2_private" {
   source             = "./modules/ec2"
   vpc_id             = module.vpc.vpc_id
