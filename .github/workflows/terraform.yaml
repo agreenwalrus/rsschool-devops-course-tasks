@@ -23,7 +23,6 @@ jobs:
 
       - name: Terraform Format
         run: terraform fmt -check -recursive
-
   terraform-plan:
     name: Terraform Plan
     runs-on: ubuntu-latest
@@ -31,6 +30,12 @@ jobs:
     env:
       TF_VAR_aws_region: "eu-west-1"
       TF_VAR_bucket_name: "${{ secrets.EXTRA_BUCKET }}"
+      TF_VAR_repo_name: "${{ github.repository }}"
+      TF_VAR_vpc_cidr: "10.0.0.0/16"
+      TF_VAR_vpc_name: "main-vpc"
+      TF_VAR_ec2_instance_type: "t2.micro"
+      TF_VAR_ec2_key_name: "${{ secrets.EC2_KEY_NAME }}"
+      TF_VAR_bastion_allowed_cidr: '["${{ secrets.ALLOWED_CIDR }}"]'
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -49,7 +54,6 @@ jobs:
 
       - name: Terraform Plan
         run: terraform plan
-
   # This job runs on any push to main, including after a PR is merged
   terraform-apply:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
@@ -59,6 +63,12 @@ jobs:
     env:
       TF_VAR_aws_region: "eu-west-1"
       TF_VAR_bucket_name: "${{ secrets.EXTRA_BUCKET }}"
+      TF_VAR_repo_name: "${{ github.repository }}"
+      TF_VAR_vpc_cidr: "10.0.0.0/16"
+      TF_VAR_vpc_name: "main-vpc"
+      TF_VAR_ec2_instance_type: "t2.micro"
+      TF_VAR_ec2_key_name: "${{ secrets.EC2_KEY_NAME }}"
+      TF_VAR_bastion_allowed_cidr: '["${{ secrets.ALLOWED_CIDR }}"]'
     steps:
       - name: Checkout code
         uses: actions/checkout@v4

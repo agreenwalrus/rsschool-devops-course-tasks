@@ -1,3 +1,6 @@
+# This module creates an IAM role for GitHub Actions to assume
+# with permissions to manage AWS resources.
+
 resource "aws_iam_openid_connect_provider" "github" {
   url = "https://token.actions.githubusercontent.com"
 
@@ -6,7 +9,7 @@ resource "aws_iam_openid_connect_provider" "github" {
   ]
 
   thumbprint_list = [
-    "6938fd4d98bab03faadb97b34396831e3780aea1" # This thumbprint is for the GitHub Actions OIDC provider
+    "6938fd4d98bab03faadb97b34396831e3780aea1"
   ]
 }
 
@@ -27,7 +30,7 @@ resource "aws_iam_role" "github_actions" {
             "token.actions.githubusercontent.com:aud" : "sts.amazonaws.com",
           },
           StringLike = {
-            "token.actions.githubusercontent.com:sub" : "repo:agreenwalrus/rsschool-devops-course-tasks:*"
+            "token.actions.githubusercontent.com:sub" : "repo:${var.repo_name}:*"
           }
         }
       }
@@ -52,4 +55,3 @@ resource "aws_iam_role_policy_attachment" "github_actions" {
   role       = aws_iam_role.github_actions.name
   policy_arn = each.key
 }
-
