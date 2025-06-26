@@ -1,7 +1,7 @@
-module "s3_bucket" {
-  source      = "./modules/s3_bucket"
-  bucket_name = var.bucket_name
-}
+# module "s3_bucket" {
+#   source      = "./modules/s3_bucket"
+#   bucket_name = var.bucket_name
+# }
 
 module "iam_github_actions" {
   source    = "./modules/iam_github_actions"
@@ -73,7 +73,7 @@ module "ec2_public" {
   name_prefix        = "public-ec2"
   is_public          = true
   vpc_cidr           = var.vpc_cidr
-  security_group_ids = [module.security_groups.public_sg_id]
+  security_group_ids = [module.security_groups.ssh_from_bastion_sg_id, module.security_groups.web_sg_id]
 }
 
 module "ec2_private" {
@@ -85,7 +85,7 @@ module "ec2_private" {
   name_prefix        = "private-ec2"
   is_public          = false
   vpc_cidr           = var.vpc_cidr
-  security_group_ids = [module.security_groups.private_sg_id]
+  security_group_ids = [module.security_groups.ssh_from_bastion_sg_id]
 }
 
 # Data source to get available availability zones
