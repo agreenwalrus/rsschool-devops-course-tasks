@@ -13,3 +13,7 @@ output "ssh_from_bastion_sg_id" {
 output "web_sg_id" {
   value = aws_security_group.web.id
 }
+
+output "inter_subnet_sg_id" {
+  value = aws_security_group.inter_subnet.id
+}

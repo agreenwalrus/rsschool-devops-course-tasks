@@ -112,3 +112,30 @@ resource "aws_security_group" "web" {
   }
 }
 
+# Security group for inter-subnet communication
+resource "aws_security_group" "inter_subnet" {
+  name        = "${var.vpc_name}-inter-subnet-sg"
+  description = "Security group allowing communication between all subnets within VPC"
+  vpc_id      = var.vpc_id
+
+  # Allow all traffic from VPC CIDR (all subnets)
+  ingress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = [var.vpc_cidr]
+  }
+
+  # Allow all outbound traffic
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks =  ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "${var.vpc_name}-inter-subnet-sg"
+  }
+}
+

@@ -53,7 +53,7 @@ module "nat_bastion" {
   ec2_key_name         = var.ec2_key_name
   ami_id               = var.ami_id
   ec2_instance_type    = var.ec2_instance_type
-  security_group_ids   = [module.security_groups.nat_sg_id, module.security_groups.bastion_sg_id]
+  security_group_ids   = [module.security_groups.nat_sg_id, module.security_groups.bastion_sg_id, module.security_groups.inter_subnet_sg_id]
 }
 
 module "routes" {
@@ -73,7 +73,7 @@ module "ec2_public" {
   name_prefix        = "public-ec2"
   is_public          = true
   vpc_cidr           = var.vpc_cidr
-  security_group_ids = [module.security_groups.ssh_from_bastion_sg_id, module.security_groups.web_sg_id]
+  security_group_ids = [module.security_groups.ssh_from_bastion_sg_id, module.security_groups.web_sg_id, module.security_groups.inter_subnet_sg_id]
 }
 
 module "ec2_private" {
@@ -85,7 +85,7 @@ module "ec2_private" {
   name_prefix        = "private-ec2"
   is_public          = false
   vpc_cidr           = var.vpc_cidr
-  security_group_ids = [module.security_groups.ssh_from_bastion_sg_id]
+  security_group_ids = [module.security_groups.ssh_from_bastion_sg_id, module.security_groups.inter_subnet_sg_id]
 }
 
 # Data source to get available availability zones
