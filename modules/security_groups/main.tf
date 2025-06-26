@@ -4,20 +4,20 @@ resource "aws_security_group" "nat" {
   description = "Security group for NAT instance"
   vpc_id      = var.vpc_id
 
-  # Allow all outbound traffic
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
   # Allow all traffic from private subnets
   ingress {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
     cidr_blocks = var.private_subnet_cidrs
+  }
+
+  # Allow all outbound traffic
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   tags = {
@@ -53,9 +53,9 @@ resource "aws_security_group" "bastion" {
 }
 
 # Security group for private instances
-resource "aws_security_group" "private_instances" {
-  name        = "${var.vpc_name}-private-sg"
-  description = "Security group for private instances"
+resource "aws_security_group" "ssh_from_bastion" {
+  name        = "${var.vpc_name}-ssh-from-bastion-sg"
+  description = "Security group for private instances allowing SSH from bastion host"
   vpc_id      = var.vpc_id
 
   # Allow SSH from bastion only
@@ -64,14 +64,6 @@ resource "aws_security_group" "private_instances" {
     to_port         = 22
     protocol        = "tcp"
     security_groups = [aws_security_group.bastion.id]
-  }
-
-  # Allow all traffic from other VPC instances (inter-subnet communication)
-  ingress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = [var.vpc_cidr]
   }
 
   # Allow all outbound traffic
@@ -83,13 +75,13 @@ resource "aws_security_group" "private_instances" {
   }
 
   tags = {
-    Name = "${var.vpc_name}-private-sg"
+    Name = "${var.vpc_name}-ssh-from-bastion-sg"
   }
 }
 
 # Security group for public EC2 instances (например, web-серверы)
-resource "aws_security_group" "public_instances" {
-  name        = "${var.vpc_name}-public-sg"
+resource "aws_security_group" "web" {
+  name        = "${var.vpc_name}-web-sg"
   description = "Security group for public EC2 instances (web, etc)"
   vpc_id      = var.vpc_id
 
@@ -106,15 +98,27 @@ resource "aws_security_group" "public_instances" {
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
-  # Allow SSH from allowed CIDRs (for management)
-  ingress {
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = var.bastion_allowed_cidr
+
+  # Allow all outbound traffic
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
-  # Allow all traffic from other VPC instances (inter-subnet communication)
+  tags = {
+    Name = "${var.vpc_name}-web-sg"
+  }
+}
+
+# Security group for inter-subnet communication
+resource "aws_security_group" "inter_subnet" {
+  name        = "${var.vpc_name}-inter-subnet-sg"
+  description = "Security group allowing communication between all subnets within VPC"
+  vpc_id      = var.vpc_id
+
+  # Allow all traffic from VPC CIDR (all subnets)
   ingress {
     from_port   = 0
     to_port     = 0
@@ -127,11 +131,11 @@ resource "aws_security_group" "public_instances" {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks =  ["0.0.0.0/0"]
   }
 
   tags = {
-    Name = "${var.vpc_name}-public-sg"
+    Name = "${var.vpc_name}-inter-subnet-sg"
   }
 }
 
