@@ -34,17 +34,23 @@ module "security_groups" {
   bastion_allowed_cidr = var.bastion_allowed_cidr
 }
 
-module "nat_bastion" {
-  source               = "./modules/nat_bastion"
+module "nat_gateway" {
+  source              = "./modules/nat_gateway"
+  vpc_name            = var.vpc_name
+  public_subnet_id    = module.public_subnets.subnet_ids[0]
+  internet_gateway_id = module.vpc.internet_gateway_id
+}
+
+module "bastion" {
+  source               = "./modules/bastion"
   vpc_id               = module.vpc.vpc_id
-  vpc_cidr             = var.vpc_cidr
   vpc_name             = var.vpc_name
   public_subnet_id     = module.public_subnets.subnet_ids[0]
   bastion_allowed_cidr = var.bastion_allowed_cidr
   ec2_key_name         = var.ec2_key_name
   ami_id               = var.ami_id
   ec2_instance_type    = var.ec2_instance_type
-  security_group_ids   = [module.security_groups.nat_sg_id, module.security_groups.bastion_sg_id, module.security_groups.inter_subnet_sg_id]
+  security_group_ids   = [module.security_groups.bastion_sg_id, module.security_groups.inter_subnet_sg_id]
 }
 
 module "routes" {
@@ -52,11 +58,12 @@ module "routes" {
   vpc_name            = module.vpc.vpc_name
   vpc_id              = module.vpc.vpc_id
   internet_gateway_id = module.vpc.internet_gateway_id
-  nat_instance_id     = module.nat_bastion.nat_network_interface_id
+  nat_gateway_id      = module.nat_gateway.nat_gateway_id
 }
 
 module "ec2_private_k3s_server" {
   source             = "./modules/ec2"
+  ami_id             = var.ami_id
   vpc_id             = module.vpc.vpc_id
   subnet_ids         = [module.private_subnets.subnet_ids[0]] # Use the first private subnet for the k3s server
   ec2_instance_type  = var.ec2_instance_type
@@ -69,6 +76,7 @@ module "ec2_private_k3s_server" {
 
 module "ec2_private_k3s_agent" {
   source     = "./modules/ec2"
+  ami_id     = var.ami_id
   vpc_id     = module.vpc.vpc_id
   subnet_ids = slice(module.private_subnets.subnet_ids, 1, length(module.private_subnets.subnet_ids)) # Use all other private subnets for k3s agents
   # This will create one instance in each of the remaining private subnets

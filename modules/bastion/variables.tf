@@ -3,11 +3,6 @@ variable "vpc_id" {
   type        = string
 }
 
-variable "vpc_cidr" {
-  description = "CIDR block for the VPC"
-  type        = string
-}
-
 variable "public_subnet_id" {
   description = "ID of the public subnet for NAT+Bastion instance"
   type        = string

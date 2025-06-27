@@ -1,30 +1,3 @@
-# Security group for NAT instance
-resource "aws_security_group" "nat" {
-  name        = "${var.vpc_name}-nat-sg"
-  description = "Security group for NAT instance"
-  vpc_id      = var.vpc_id
-
-  # Allow all traffic from private subnets
-  ingress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = var.private_subnet_cidrs
-  }
-
-  # Allow all outbound traffic
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  tags = {
-    Name = "${var.vpc_name}-nat-sg"
-  }
-}
-
 # Security group for bastion host
 resource "aws_security_group" "bastion" {
   name        = "${var.vpc_name}-bastion-sg"
@@ -131,7 +104,7 @@ resource "aws_security_group" "inter_subnet" {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
-    cidr_blocks =  ["0.0.0.0/0"]
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   tags = {

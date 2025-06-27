@@ -53,14 +53,24 @@ output "ec2_private_k3s_agent_private_ips" {
   description = "Private IP addresses of the EC2 instances for the k3s agents"
 }
 
-output "nat_instance_id" {
-  value       = module.nat_bastion.nat_instance_id
-  description = "ID of the NAT server instance"
+output "bastion_instance_id" {
+  value       = module.bastion.bastion_instance_id
+  description = "ID of the bastion host instance"
 }
 
-output "nat_instance_public_ip" {
-  value       = module.nat_bastion.nat_instance_public_ip
-  description = "Public IP address of the NAT server instance"
+output "bastion_public_ip" {
+  value       = module.bastion.bastion_public_ip
+  description = "Public IP address of the bastion host instance"
+}
+
+output "nat_gateway_id" {
+  value       = module.nat_gateway.nat_gateway_id
+  description = "ID of the NAT Gateway"
+}
+
+output "nat_gateway_public_ip" {
+  value       = module.nat_gateway.nat_gateway_public_ip
+  description = "Public IP address of the NAT Gateway"
 }
 
 output "calculated_availability_zones" {

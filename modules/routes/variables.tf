@@ -13,7 +13,7 @@ variable "internet_gateway_id" {
   type        = string
 }
 
-variable "nat_instance_id" {
-  description = "NAT instance or network interface ID for private route table"
+variable "nat_gateway_id" {
+  description = "NAT Gateway ID for private route table"
   type        = string
 }
