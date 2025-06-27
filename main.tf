@@ -5,11 +5,12 @@ module "vpc" {
 }
 
 module "public_subnets" {
-  source         = "./modules/subnets"
-  vpc_id         = module.vpc.vpc_id
-  vpc_name       = module.vpc.vpc_name
-  cidr_blocks    = local.public_subnets
-  azs            = local.availability_zones
+  source      = "./modules/subnets"
+  vpc_id      = module.vpc.vpc_id
+  vpc_name    = module.vpc.vpc_name
+  cidr_blocks = [local.public_subnets[0]]     # Use the VPC CIDR for public subnets
+  azs         = [local.availability_zones[0]] # Use only the first AZ for public subnets 
+  # This will create one public subnet in the first AZ
   is_public      = true
   route_table_id = module.routes.public_route_table_id
 }
@@ -54,13 +55,26 @@ module "routes" {
   nat_instance_id     = module.nat_bastion.nat_network_interface_id
 }
 
-module "ec2_private" {
+module "ec2_private_k3s_server" {
   source             = "./modules/ec2"
   vpc_id             = module.vpc.vpc_id
-  subnet_ids         = module.private_subnets.subnet_ids
+  subnet_ids         = [module.private_subnets.subnet_ids[0]] # Use the first private subnet for the k3s server
   ec2_instance_type  = var.ec2_instance_type
   ec2_key_name       = var.ec2_key_name
-  name_prefix        = "private-ec2"
+  name_prefix        = "k3s-server-ec2"
+  is_public          = false
+  vpc_cidr           = var.vpc_cidr
+  security_group_ids = [module.security_groups.ssh_from_bastion_sg_id, module.security_groups.inter_subnet_sg_id]
+}
+
+module "ec2_private_k3s_agent" {
+  source     = "./modules/ec2"
+  vpc_id     = module.vpc.vpc_id
+  subnet_ids = slice(module.private_subnets.subnet_ids, 1, length(module.private_subnets.subnet_ids)) # Use all other private subnets for k3s agents
+  # This will create one instance in each of the remaining private subnets
+  ec2_instance_type  = var.ec2_instance_type
+  ec2_key_name       = var.ec2_key_name
+  name_prefix        = "k3s-agent-ec2"
   is_public          = false
   vpc_cidr           = var.vpc_cidr
   security_group_ids = [module.security_groups.ssh_from_bastion_sg_id, module.security_groups.inter_subnet_sg_id]
@@ -75,10 +89,9 @@ data "aws_availability_zones" "available" {
 locals {
   # Use provided AZs or get first 2 available ones
   availability_zones = length(var.azs) > 0 ? var.azs : slice(data.aws_availability_zones.available.names, 0, 2)
-  # Calculate subnet CIDR blocks if not provided
+
   public_subnets = length(var.public_subnets) > 0 ? var.public_subnets : [
-    for i in range(length(local.availability_zones)) :
-    cidrsubnet(var.vpc_cidr, 8, i * 2)
+    cidrsubnet(var.vpc_cidr, 8, 0) # Use the first subnet of the VPC CIDR for public
   ]
 
   private_subnets = length(var.private_subnets) > 0 ? var.private_subnets : [

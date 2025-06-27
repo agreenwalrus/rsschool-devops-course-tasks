@@ -34,19 +34,23 @@ output "private_subnet_ids" {
   description = "IDs of the private subnets"
 }
 
-output "ec2_private_instance_ids" {
-  value       = module.ec2_private.instance_ids
-  description = "IDs of the EC2 instances in private subnets"
+output "ec2_private_k3s_server_instance_ids" {
+  value       = module.ec2_private_k3s_server.instance_ids
+  description = "ID of the EC2 instances for the k3s server"
 }
 
-output "ec2_private_instance_private_ips" {
-  value       = module.ec2_private.private_ips
-  description = "Private IP addresses of the EC2 instances in private subnets"
+output "ec2_private_k3s_agent_instance_ids" {
+  value       = module.ec2_private_k3s_agent.instance_ids
+  description = "IDs of the EC2 instances for the private k3s agents"
+}
+output "ec2_private_k3s_server_private_ips" {
+  value       = module.ec2_private_k3s_server.private_ips
+  description = "Private IP addresses of the EC2 instance for the k3s server"
 }
 
-output "ec2_private_instance_details" {
-  value       = module.ec2_private.instance_details
-  description = "Detailed information about all EC2 instances in private subnets"
+output "ec2_private_k3s_agent_private_ips" {
+  value       = module.ec2_private_k3s_agent.private_ips
+  description = "Private IP addresses of the EC2 instances for the k3s agents"
 }
 
 output "nat_instance_id" {
@@ -64,12 +68,12 @@ output "calculated_availability_zones" {
   description = "Availability zones used for subnets"
 }
 
-output "calculated_public_subnets" {
-  value       = local.public_subnets
-  description = "CIDR blocks for public subnets (calculated or provided)"
-}
-
 output "calculated_private_subnets" {
   value       = local.private_subnets
   description = "CIDR blocks for private subnets (calculated or provided)"
+}
+
+output "calculated_public_subnets" {
+  value       = local.public_subnets
+  description = "CIDR blocks for public subnets (calculated or provided)"
 }
