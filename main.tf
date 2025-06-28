@@ -66,7 +66,7 @@ module "ec2_private_k3s_server" {
   ami_id             = var.ami_id
   vpc_id             = module.vpc.vpc_id
   subnet_ids         = [module.private_subnets.subnet_ids[0]] # Use the first private subnet for the k3s server
-  ec2_instance_type  = var.ec2_instance_type
+  ec2_instance_type  = "t3.medium" # Use a larger instance type for the k3s server
   ec2_key_name       = var.ec2_key_name
   name_prefix        = "k3s-server-ec2"
   is_public          = false
@@ -80,7 +80,7 @@ module "ec2_private_k3s_agent" {
   vpc_id     = module.vpc.vpc_id
   subnet_ids = slice(module.private_subnets.subnet_ids, 1, length(module.private_subnets.subnet_ids)) # Use all other private subnets for k3s agents
   # This will create one instance in each of the remaining private subnets
-  ec2_instance_type  = var.ec2_instance_type
+  ec2_instance_type  = "t3.small"
   ec2_key_name       = var.ec2_key_name
   name_prefix        = "k3s-agent-ec2"
   is_public          = false
