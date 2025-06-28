@@ -1,4 +1,4 @@
-# EC2 instance NAT+Bastion
+# EC2 instance Bastion
 resource "aws_instance" "bastion" {
   ami                         = var.ami_id 
   instance_type               = var.ec2_instance_type

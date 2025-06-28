@@ -4,7 +4,7 @@ variable "vpc_id" {
 }
 
 variable "public_subnet_id" {
-  description = "ID of the public subnet for NAT+Bastion instance"
+  description = "ID of the public subnet for Bastion instance"
   type        = string
 }
 
@@ -26,7 +26,7 @@ variable "ami_id" {
 }
 
 variable "ec2_instance_type" {
-  description = "Instance type for NAT+Bastion instance"
+  description = "Instance type for Bastion instance"
   type        = string
   default     = "t2.micro"
 }
@@ -37,6 +37,6 @@ variable "vpc_name" {
 }
 
 variable "security_group_ids" {
-  description = "List of security group IDs to attach to the NAT+Bastion instance"
+  description = "List of security group IDs to attach to the Bastion instance"
   type        = list(string)
 }
