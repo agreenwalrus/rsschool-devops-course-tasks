@@ -18,4 +18,12 @@ terraform {
 
 provider "aws" {
   region = var.aws_region
+
+  default_tags {
+    tags = {
+      Environment = "dev"
+      Project     = "RSSchool AWS DevOps Course 2025Q2"
+      Owner       = "agreenwalrus"
+    }
+  }
 }

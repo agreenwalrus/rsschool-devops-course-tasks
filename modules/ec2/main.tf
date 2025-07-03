@@ -1,26 +1,10 @@
 # This module creates EC2 instances in specified subnets with optional NAT server functionality.
 # It supports both public and private subnets, with security groups configured for SSH, HTTP, and HTTPS access.
 
-# Data source to get the latest Amazon Linux 2 AMI
-data "aws_ami" "amazon_linux" {
-  most_recent = true
-  owners      = ["amazon"]
-
-  filter {
-    name   = "name"
-    values = ["amzn2-ami-hvm-*-x86_64-gp2"]
-  }
-
-  filter {
-    name   = "virtualization-type"
-    values = ["hvm"]
-  }
-}
-
 # EC2 instances
 resource "aws_instance" "ec2" {
   count                       = length(var.subnet_ids)
-  ami                         = data.aws_ami.amazon_linux.id
+  ami                         = var.ami_id
   instance_type               = var.ec2_instance_type
   subnet_id                   = var.subnet_ids[count.index]
   vpc_security_group_ids      = var.security_group_ids

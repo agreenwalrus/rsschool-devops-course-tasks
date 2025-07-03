@@ -48,3 +48,9 @@ variable "security_group_ids" {
   type        = list(string)
   description = "List of security group IDs to attach to the EC2 instances"
 }
+
+variable "ami_id" {
+  type        = string
+  description = "AMI ID to use for the EC2 instances"
+  default     = null
+}
